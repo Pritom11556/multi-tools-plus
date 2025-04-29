@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Converter - Text Case Transformation Tool</title>
+    <meta name="description" content="Free online case converter tool. Transform text to uppercase, lowercase, title case, sentence case, and more with ease.">
+    <link rel="stylesheet" href="css/case-converter.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Case Converter</h1>
+        <p>Transform your text case with just one click</p>
+    </header>
+
+    <main class="container">
+        <div class="converter-container">
+            <div class="case-options">
+                <button class="case-btn" data-case="uppercase">UPPERCASE</button>
+                <button class="case-btn" data-case="lowercase">lowercase</button>
+                <button class="case-btn" data-case="titleCase">Title Case</button>
+                <button class="case-btn" data-case="sentenceCase">Sentence case</button>
+                <button class="case-btn" data-case="capitalizeWords">Capitalize Words</button>
+                <button class="case-btn" data-case="alternatingCase">aLtErNaTiNg</button>
+                <button class="case-btn" data-case="inverseCase">iNVERSE cASE</button>
+            </div>
+
+            <div class="text-area-container">
+                <textarea id="text-input" placeholder="Enter or paste your text here..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button id="copy-btn" class="action-btn">
+                    <i class="fas fa-copy"></i> Copy Text
+                </button>
+                <button id="clear-btn" class="action-btn">
+                    <i class="fas fa-trash"></i> Clear Text
+                </button>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-card">
+                <h3>About Case Converter</h3>
+                <p>This tool helps you transform text case quickly and easily. Perfect for formatting content, adjusting text for different purposes, or fixing case issues in your writing.</p>
+                <ul>
+                    <li><strong>UPPERCASE:</strong> Converts all characters to capital letters</li>
+                    <li><strong>lowercase:</strong> Converts all characters to small letters</li>
+                    <li><strong>Title Case:</strong> Capitalizes the first letter of each word</li>
+                    <li><strong>Sentence case:</strong> Capitalizes the first letter of each sentence</li>
+                    <li><strong>Capitalize Words:</strong> Capitalizes the first letter of each word</li>
+                    <li><strong>aLtErNaTiNg:</strong> Alternates between upper and lowercase letters</li>
+                    <li><strong>iNVERSE cASE:</strong> Inverts the current case of each character</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 Case Converter. All rights reserved.</p>
+    </footer>
+
+    <script src="js/case-converter.js"></script>
+</body>
+</html> 

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator - Multi-Tools Hub</title>
+    <meta name="description" content="Free online scientific calculator with advanced mathematical functions, unit conversions, and calculation history.">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../css/style.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .calculator-container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .calculator-display {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        
+        .calculator-expression {
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-align: right;
+            min-height: 1.2rem;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+        
+        .calculator-result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: right;
+            word-break: break-all;
+        }
+        
+        .calculator-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .calculator-button {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #dee2e6;
+            background-color: #fff;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .calculator-button:hover {
+            background-color: #e9ecef;
+        }
+        
+        .calculator-button:active {
+            background-color: #dee2e6;
+        }
+        
+        .calculator-button.function {
+            background-color: #e9ecef;
+        }
+        
+        .calculator-button.operator {
+            background-color: #e7f5ff;
+        }
+        
+        .calculator-button.equals {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .calculator-button.equals:hover {
+            background-color: #0b5ed7;
+        }
+        
+        .calculator-button.clear {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+        
+        .calculator-button.clear:hover {
+            background-color: #f5c2c7;
+        }
+        
+        .calculator-history {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        
+        .history-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+            cursor: pointer;
+        }
+        
+        .history-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .history-expression {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .history-result {
+            font-weight: bold;
+            text-align: right;
+        }
+        
+        .calculator-tabs {
+            margin-bottom: 1rem;
+        }
+        
+        .calculator-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+            margin-right: 0.25rem;
+            border-radius: 0.25rem 0.25rem 0 0;
+        }
+        
+        .calculator-tab.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+            margin-bottom: -1px;
+        }
+        
+        .calculator-panel {
+            display: none;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0 0.25rem 0.25rem 0.25rem;
+        }
+        
+        .calculator-panel.active {
+            display: block;
+        }
+        
+        .unit-converter {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .unit-group {
+            margin-bottom: 1rem;
+        }
+        
+        .unit-label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .unit-select {
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+        
+        .unit-input {
+            width: 100%;
+            padding: 0.375rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-buttons {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .unit-converter {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be dynamically loaded -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1><i class="fas fa-calculator"></i> Scientific Calculator</h1>
+                <p class="lead">Advanced calculator with scientific functions, unit conversions, and calculation history</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="calculator-container">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Calculator</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="calculator-tabs">
+                                    <span class="calculator-tab active" data-tab="standard">Standard</span>
+                                    <span class="calculator-tab" data-tab="scientific">Scientific</span>
+                                    <span class="calculator-tab" data-tab="converter">Unit Converter</span>
+                                </div>
+                                
+                                <!-- Standard Calculator Panel -->
+                                <div class="calculator-panel active" id="standardPanel">
+                                    <div class="calculator-display">
+                                        <div class="calculator-expression" id="expression">0</div>
+                                        <div class="calculator-result" id="result">0</div>
+                                    </div>
+                                    
+                                    <div class="calculator-buttons">
+                                        <button class="calculator-button clear" data-action="clear">C</button>
+                                        <button class="calculator-button function" data-action="backspace">⌫</button>
+                                        <button class="calculator-button function" data-action="percent">%</button>
+                                        <button class="calculator-button operator" data-action="divide">÷</button>
+                                        <button class="calculator-button function" data-action="sqrt">√</button>
+                                        
+                                        <button class="calculator-button" data-value="7">7</button>
+                                        <button class="calculator-button" data-value="8">8</button>
+                                        <button class="calculator-button" data-value="9">9</button>
+                                        <button class="calculator-button operator" data-action="multiply">×</button>
+                                        <button class="calculator-button function" data-action="square">x²</button>
+                                        
+                                        <button class="calculator-button" data-value="4">4</button>
+                                        <button class="calculator-button" data-value="5">5</button>
+                                        <button class="calculator-button" data-value="6">6</button>
+                                        <button class="calculator-button operator" data-action="subtract">-</button>
+                                        <button class="calculator-button function" data-action="reciprocal">1/x</button>
+                                        
+                                        <button class="calculator-button" data-value="1">1</button>
+                                        <button class="calculator-button" data-value="2">2</button>
+                                        <button class="calculator-button" data-value="3">3</button>
+                                        <button class="calculator-button operator" data-action="add">+</button>
+                                        <button class="calculator-button function" data-action="memory">M+</button>
+                                        
+                                        <button class="calculator-button" data-value="0">0</button>
+                                        <button class="calculator-button" data-value=".">.</button>
+                                        <button class="calculator-button function" data-action="negate">±</button>
+                                        <button class="calculator-button equals" data-action="equals">=</button>
+                                        <button class="calculator-button function" data-action="memoryRecall">MR</button>
+                                    </div>
+                                    
+                                    <div class="calculator-history" id="history">
+                                        <div class="text-center text-muted py-3">Calculation history will appear here</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Scientific Calculator Panel -->
+                                <div class="calculator-panel" id="scientificPanel">
+                                    <div class="calculator-display">
+                                        <div class="calculator-expression" id="scientificExpression">0</div>
+                                        <div class="calculator-result" id="scientificResult">0</div>
+                                    </div>
+                                    
+                                    <div class="calculator-buttons">
+                                        <button class="calculator-button clear" data-action="scientificClear">C</button>
+                                        <button class="calculator-button function" data-action="scientificBackspace">⌫</button>
+                                        <button class="calculator-button function" data-action="scientificPercent">%</button>
+                                        <button class="calculator-button operator" data-action="scientificDivide">÷</button>
+                                        <button class="calculator-button function" data-action="scientificSqrt">√</button>
+                                        
+                                        <button class="calculator-button function" data-action="sin">sin</button>
+                                        <button class="calculator-button function" data-action="cos">cos</button>
+                                        <button class="calculator-button function" data-action="tan">tan</button>
+                                        <button class="calculator-button operator" data-action="scientificMultiply">×</button>
+                                        <button class="calculator-button function" data-action="scientificSquare">x²</button>
+                                        
+                                        <button class="calculator-button function" data-action="asin">asin</button>
+                                        <button class="calculator-button function" data-action="acos">acos</button>
+                                        <button class="calculator-button function" data-action="atan">atan</button>
+                                        <button class="calculator-button operator" data-action="scientificSubtract">-</button>
+                                        <button class="calculator-button function" data-action="scientificReciprocal">1/x</button>
+                                        
+                                        <button class="calculator-button function" data-action="log">log</button>
+                                        <button class="calculator-button function" data-action="ln">ln</button>
+                                        <button class="calculator-button function" data-action="exp">exp</button>
+                                        <button class="calculator-button operator" data-action="scientificAdd">+</button>
+                                        <button class="calculator-button function" data-action="scientificMemory">M+</button>
+                                        
+                                        <button class="calculator-button function" data-action="pi">π</button>
+                                        <button class="calculator-button function" data-action="e">e</button>
+                                        <button class="calculator-button function" data-action="scientificNegate">±</button>
+                                        <button class="calculator-button equals" data-action="scientificEquals">=</button>
+                                        <button class="calculator-button function" data-action="scientificMemoryRecall">MR</button>
+                                        
+                                        <button class="calculator-button" data-value="7">7</button>
+                                        <button class="calculator-button" data-value="8">8</button>
+                                        <button class="calculator-button" data-value="9">9</button>
+                                        <button class="calculator-button function" data-action="power">x^y</button>
+                                        <button class="calculator-button function" data-action="factorial">x!</button>
+                                        
+                                        <button class="calculator-button" data-value="4">4</button>
+                                        <button class="calculator-button" data-value="5">5</button>
+                                        <button class="calculator-button" data-value="6">6</button>
+                                        <button class="calculator-button function" data-action="modulo">mod</button>
+                                        <button class="calculator-button function" data-action="abs">|x|</button>
+                                        
+                                        <button class="calculator-button" data-value="1">1</button>
+                                        <button class="calculator-button" data-value="2">2</button>
+                                        <button class="calculator-button" data-value="3">3</button>
+                                        <button class="calculator-button function" data-action="leftParen">(</button>
+                                        <button class="calculator-button function" data-action="rightParen">)</button>
+                                        
+                                        <button class="calculator-button" data-value="0">0</button>
+                                        <button class="calculator-button" data-value=".">.</button>
+                                        <button class="calculator-button function" data-action="scientificDegRad">DEG</button>
+                                        <button class="calculator-button function" data-action="scientificMemoryClear">MC</button>
+                                        <button class="calculator-button function" data-action="scientificMemorySubtract">M-</button>
+                                    </div>
+                                    
+                                    <div class="calculator-history" id="scientificHistory">
+                                        <div class="text-center text-muted py-3">Calculation history will appear here</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Unit Converter Panel -->
+                                <div class="calculator-panel" id="converterPanel">
+                                    <div class="unit-converter">
+                                        <div>
+                                            <div class="unit-group">
+                                                <div class="unit-label">Length</div>
+                                                <select class="unit-select" id="lengthFromUnit">
+                                                    <option value="meter">Meter (m)</option>
+                                                    <option value="kilometer">Kilometer (km)</option>
+                                                    <option value="centimeter">Centimeter (cm)</option>
+                                                    <option value="millimeter">Millimeter (mm)</option>
+                                                    <option value="mile">Mile (mi)</option>
+                                                    <option value="yard">Yard (yd)</option>
+                                                    <option value="foot">Foot (ft)</option>
+                                                    <option value="inch">Inch (in)</option>
+                                                </select>
+                                                <input type="number" class="unit-input mt-2" id="lengthFromValue" placeholder="Enter value">
+                                            </div>
+                                            
+                                            <div class="unit-group">
+                                                <div class="unit-label">Weight</div>
+                                                <select class="unit-select" id="weightFromUnit">
+                                                    <option value="kilogram">Kilogram (kg)</option>
+                                                    <option value="gram">Gram (g)</option>
+                                                    <option value="milligram">Milligram (mg)</option>
+                                                    <option value="pound">Pound (lb)</option>
+                                                    <option value="ounce">Ounce (oz)</option>
+                                                </select>
+                                                <input type="number" class="unit-input mt-2" id="weightFromValue" placeholder="Enter value">
+                                            </div>
+                                            
+                                            <div class="unit-group">
+                                                <div class="unit-label">Temperature</div>
+                                                <select class="unit-select" id="tempFromUnit">
+                                                    <option value="celsius">Celsius (°C)</option>
+                                                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                                                    <option value="kelvin">Kelvin (K)</option>
+                                                </select>
+                                                <input type="number" class="unit-input mt-2" id="tempFromValue" placeholder="Enter value">
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <div class="unit-group">
+                                                <div class="unit-label">Length</div>
+                                                <select class="unit-select" id="lengthToUnit">
+                                                    <option value="meter">Meter (m)</option>
+                                                    <option value="kilometer">Kilometer (km)</option>
+                                                    <option value="centimeter">Centimeter (cm)</option>
+                                                    <option value="millimeter">Millimeter (mm)</option>
+                                                    <option value="mile">Mile (mi)</option>
+                                                    <option value="yard">Yard (yd)</option>
+                                                    <option value="foot">Foot (ft)</option>
+                                                    <option value="inch">Inch (in)</option>
+                                                </select>
+                                                <input type="number" class="unit-input mt-2" id="lengthToValue" placeholder="Result" readonly>
+                                            </div>
+                                            
+                                            <div class="unit-group">
+                                                <div class="unit-label">Weight</div>
+                                                <select class="unit-select" id="weightToUnit">
+                                                    <option value="kilogram">Kilogram (kg)</option>
+                                                    <option value="gram">Gram (g)</option>
+                                                    <option value="milligram">Milligram (mg)</option>
+                                                    <option value="pound">Pound (lb)</option>
+                                                    <option value="ounce">Ounce (oz)</option>
+                                                </select>
+                                                <input type="number" class="unit-input mt-2" id="weightToValue" placeholder="Result" readonly>
+                                            </div>
+                                            
+                                            <div class="unit-group">
+                                                <div class="unit-label">Temperature</div>
+                                                <select class="unit-select" id="tempToUnit">
+                                                    <option value="celsius">Celsius (°C)</option>
+                                                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                                                    <option value="kelvin">Kelvin (K)</option>
+                                                </select>
+                                                <input type="number" class="unit-input mt-2" id="tempToValue" placeholder="Result" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <button class="btn btn-primary" id="convertBtn">Convert</button>
+                                        <button class="btn btn-secondary" id="resetConverterBtn">Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <h4>About Scientific Calculator</h4>
+                        <p>A powerful scientific calculator with advanced mathematical functions, unit conversions, and calculation history.</p>
+                        
+                        <h5 class="mt-3">Features:</h5>
+                        <ul>
+                            <li>Standard arithmetic operations</li>
+                            <li>Scientific functions (sin, cos, tan, log, etc.)</li>
+                            <li>Unit conversions for length, weight, and temperature</li>
+                            <li>Calculation history</li>
+                            <li>Memory functions (M+, M-, MR, MC)</li>
+                        </ul>
+                        
+                        <h5 class="mt-3">Keyboard shortcuts:</h5>
+                        <ul>
+                            <li>Numbers: 0-9 keys</li>
+                            <li>Operators: +, -, *, /</li>
+                            <li>Equals: Enter key</li>
+                            <li>Clear: Escape key</li>
+                            <li>Backspace: Backspace key</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle"></i> Tip: Use the scientific mode for advanced calculations and the unit converter for quick conversions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be dynamically loaded -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calculator elements
+            const expression = document.getElementById('expression');
+            const result = document.getElementById('result');
+            const history = document.getElementById('history');
+            const scientificExpression = document.getElementById('scientificExpression');
+            const scientificResult = document.getElementById('scientificResult');
+            const scientificHistory = document.getElementById('scientificHistory');
+            
+            // Unit converter elements
+            const lengthFromUnit = document.getElementById('lengthFromUnit');
+            const lengthToUnit = document.getElementById('lengthToUnit');
+            const lengthFromValue = document.getElementById('lengthFromValue');
+            const lengthToValue = document.getElementById('lengthToValue');
+            
+            const weightFromUnit = document.getElementById('weightFromUnit');
+            const weightToUnit = document.getElementById('weightToUnit');
+            const weightFromValue = document.getElementById('weightFromValue');
+            const weightToValue = document.getElementById('weightToValue');
+            
+            const tempFromUnit = document.getElementById('tempFromUnit');
+            const tempToUnit = document.getElementById('tempToUnit');
+            const tempFromValue = document.getElementById('tempFromValue');
+            const tempToValue = document.getElementById('tempToValue');
+            
+            const convertBtn = document.getElementById('convertBtn');
+            const resetConverterBtn = document.getElementById('resetConverterBtn');
+            
+            // Tab elements
+            const tabs = document.querySelectorAll('.calculator-tab');
+            const panels = document.querySelectorAll('.calculator-panel');
+            
+            // Calculator state
+            let currentExpression = '0';
+            let currentScientificExpression = '0';
+            let memoryValue = 0;
+            let isDegrees = true; // true for degrees, false for radians
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active panel
+                    panels.forEach(panel => {
+                        panel.classList.remove('active');
+                        if (panel.id === tabName + 'Panel') {
+                            panel.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Standard calculator functions
+            function updateDisplay() {
+                expression.textContent = currentExpression;
+                try {
+                    // Replace operators with JavaScript operators
+                    let evalExpression = currentExpression
+                        .replace(/×/g, '*')
+                        .replace(/÷/g, '/')
+                        .replace(/√/g, 'Math.sqrt')
+                        .replace(/x²/g, '**2')
+                        .replace(/x\^y/g, '**');
+                    
+                    // Evaluate expression
+                    const evalResult = eval(evalExpression);
+                    
+                    // Format result
+                    if (isFinite(evalResult) && !isNaN(evalResult)) {
+                        result.textContent = formatNumber(evalResult);
+                    } else {
+                        result.textContent = 'Error';
+                    }
+                } catch (error) {
+                    result.textContent = 'Error';
+                }
+            }
+            
+            function updateScientificDisplay() {
+                scientificExpression.textContent = currentScientificExpression;
+                try {
+                    // Replace operators with JavaScript operators
+                    let evalExpression = currentScientificExpression
+                        .replace(/×/g, '*')
+                        .replace(/÷/g, '/')
+                        .replace(/√/g, 'Math.sqrt')
+                        .replace(/x²/g, '**2')
+                        .replace(/x\^y/g, '**')
+                        .replace(/sin/g, isDegrees ? 'Math.sin(Math.PI/180*' : 'Math.sin(')
+                        .replace(/cos/g, isDegrees ? 'Math.cos(Math.PI/180*' : 'Math.cos(')
+                        .replace(/tan/g, isDegrees ? 'Math.tan(Math.PI/180*' : 'Math.tan(')
+                        .replace(/asin/g, isDegrees ? 'Math.asin*180/Math.PI' : 'Math.asin')
+                        .replace(/acos/g, isDegrees ? 'Math.acos*180/Math.PI' : 'Math.acos')
+                        .replace(/atan/g, isDegrees ? 'Math.atan*180/Math.PI' : 'Math.atan')
+                        .replace(/log/g, 'Math.log10')
+                        .replace(/ln/g, 'Math.log')
+                        .replace(/exp/g, 'Math.exp')
+                        .replace(/π/g, 'Math.PI')
+                        .replace(/e/g, 'Math.E')
+                        .replace(/mod/g, '%')
+                        .replace(/abs/g, 'Math.abs')
+                        .replace(/x!/g, 'factorial');
+                    
+                    // Evaluate expression
+                    const evalResult = eval(evalExpression);
+                    
+                    // Format result
+                    if (isFinite(evalResult) && !isNaN(evalResult)) {
+                        scientificResult.textContent = formatNumber(evalResult);
+                    } else {
+                        scientificResult.textContent = 'Error';
+                    }
+                } catch (error) {
+                    scientificResult.textContent = 'Error';
+                }
+            }
+            
+            function formatNumber(num) {
+                // Format large numbers with scientific notation
+                if (Math.abs(num) > 1e10 || (Math.abs(num) < 1e-10 && num !== 0)) {
+                    return num.toExponential(6);
+                }
+                
+                // Format regular numbers
+                return num.toString();
+            }
+            
+            function addToHistory(expr, res) {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-expression">${expr}</div>
+                    <div class="history-result">${res}</div>
+                `;
+                
+                // Add click event to reuse the result
+                historyItem.addEventListener('click', function() {
+                    currentExpression = res;
+                    updateDisplay();
+                });
+                
+                // Add to history
+                if (history.querySelector('.text-muted')) {
+                    history.innerHTML = '';
+                }
+                
+                history.insertBefore(historyItem, history.firstChild);
+                
+                // Limit history to 10 items
+                if (history.children.length > 10) {
+                    history.removeChild(history.lastChild);
+                }
+            }
+            
+            function addToScientificHistory(expr, res) {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-expression">${expr}</div>
+                    <div class="history-result">${res}</div>
+                `;
+                
+                // Add click event to reuse the result
+                historyItem.addEventListener('click', function() {
+                    currentScientificExpression = res;
+                    updateScientificDisplay();
+                });
+                
+                // Add to history
+                if (scientificHistory.querySelector('.text-muted')) {
+                    scientificHistory.innerHTML = '';
+                }
+                
+                scientificHistory.insertBefore(historyItem, scientificHistory.firstChild);
+                
+                // Limit history to 10 items
+                if (scientificHistory.children.length > 10) {
+                    scientificHistory.removeChild(scientificHistory.lastChild);
+                }
+            }
+            
+            function factorial(n) {
+                if (n < 0) return NaN;
+                if (n === 0 || n === 1) return 1;
+                let result = 1;
+                for (let i = 2; i <= n; i++) {
+                    result *= i;
+                }
+                return result;
+            }
+            
+            // Standard calculator event listeners
+            document.querySelectorAll('.calculator-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const action = this.getAttribute('data-action');
+                    
+                    if (value) {
+                        // Handle number input
+                        if (currentExpression === '0') {
+                            currentExpression = value;
+                        } else {
+                            currentExpression += value;
+                        }
+                        updateDisplay();
+                    } else if (action) {
+                        // Handle actions
+                        switch (action) {
+                            case 'clear':
+                                currentExpression = '0';
+                                break;
+                            case 'backspace':
+                                if (currentExpression.length > 1) {
+                                    currentExpression = currentExpression.slice(0, -1);
+                                } else {
+                                    currentExpression = '0';
+                                }
+                                break;
+                            case 'percent':
+                                try {
+                                    const evalResult = eval(currentExpression.replace(/×/g, '*').replace(/÷/g, '/'));
+                                    currentExpression = (evalResult / 100).toString();
+                                } catch (error) {
+                                    currentExpression = '0';
+                                }
+                                break;
+                            case 'divide':
+                                currentExpression += '÷';
+                                break;
+                            case 'multiply':
+                                currentExpression += '×';
+                                break;
+                            case 'subtract':
+                                currentExpression += '-';
+                                break;
+                            case 'add':
+                                currentExpression += '+';
+                                break;
+                            case 'sqrt':
+                                currentExpression = '√(' + currentExpression + ')';
+                                break;
+                            case 'square':
+                                currentExpression += '²';
+                                break;
+                            case 'reciprocal':
+                                currentExpression = '1÷(' + currentExpression + ')';
+                                break;
+                            case 'negate':
+                                if (currentExpression.startsWith('-')) {
+                                    currentExpression = currentExpression.substring(1);
+                                } else {
+                                    currentExpression = '-' + currentExpression;
+                                }
+                                break;
+                            case 'equals':
+                                try {
+                                    const evalExpression = currentExpression
+                                        .replace(/×/g, '*')
+                                        .replace(/÷/g, '/')
+                                        .replace(/√/g, 'Math.sqrt')
+                                        .replace(/²/g, '**2');
+                                    
+                                    const evalResult = eval(evalExpression);
+                                    
+                                    if (isFinite(evalResult) && !isNaN(evalResult)) {
+                                        addToHistory(currentExpression, formatNumber(evalResult));
+                                        currentExpression = formatNumber(evalResult);
+                                    } else {
+                                        currentExpression = 'Error';
+                                    }
+                                } catch (error) {
+                                    currentExpression = 'Error';
+                                }
+                                break;
+                            case 'memory':
+                                try {
+                                    const evalExpression = currentExpression
+                                        .replace(/×/g, '*')
+                                        .replace(/÷/g, '/')
+                                        .replace(/√/g, 'Math.sqrt')
+                                        .replace(/²/g, '**2');
+                                    
+                                    const evalResult = eval(evalExpression);
+                                    
+                                    if (isFinite(evalResult) && !isNaN(evalResult)) {
+                                        memoryValue += evalResult;
+                                        currentExpression = '0';
+                                    }
+                                } catch (error) {
+                                    // Ignore error
+                                }
+                                break;
+                            case 'memoryRecall':
+                                currentExpression = memoryValue.toString();
+                                break;
+                            
+                            // Scientific calculator actions
+                            case 'scientificClear':
+                                currentScientificExpression = '0';
+                                break;
+                            case 'scientificBackspace':
+                                if (currentScientificExpression.length > 1) {
+                                    currentScientificExpression = currentScientificExpression.slice(0, -1);
+                                } else {
+                                    currentScientificExpression = '0';
+                                }
+                                break;
+                            case 'scientificPercent':
+                                try {
+                                    const evalResult = eval(currentScientificExpression.replace(/×/g, '*').replace(/÷/g, '/'));
+                                    currentScientificExpression = (evalResult / 100).toString();
+                                } catch (error) {
+                                    currentScientificExpression = '0';
+                                }
+                                break;
+                            case 'scientificDivide':
+                                currentScientificExpression += '÷';
+                                break;
+                            case 'scientificMultiply':
+                                currentScientificExpression += '×';
+                                break;
+                            case 'scientificSubtract':
+                                currentScientificExpression += '-';
+                                break;
+                            case 'scientificAdd':
+                                currentScientificExpression += '+';
+                                break;
+                            case 'scientificSqrt':
+                                currentScientificExpression = '√(' + currentScientificExpression + ')';
+                                break;
+                            case 'scientificSquare':
+                                currentScientificExpression += '²';
+                                break;
+                            case 'scientificReciprocal':
+                                currentScientificExpression = '1÷(' + currentScientificExpression + ')';
+                                break;
+                            case 'scientificNegate':
+                                if (currentScientificExpression.startsWith('-')) {
+                                    currentScientificExpression = currentScientificExpression.substring(1);
+                                } else {
+                                    currentScientificExpression = '-' + currentScientificExpression;
+                                }
+                                break;
+                            case 'scientificEquals':
+                                try {
+                                    const evalExpression = currentScientificExpression
+                                        .replace(/×/g, '*')
+                                        .replace(/÷/g, '/')
+                                        .replace(/√/g, 'Math.sqrt')
+                                        .replace(/²/g, '**2')
+                                        .replace(/sin/g, isDegrees ? 'Math.sin(Math.PI/180*' : 'Math.sin(')
+                                        .replace(/cos/g, isDegrees ? 'Math.cos(Math.PI/180*' : 'Math.cos(')
+                                        .replace(/tan/g, isDegrees ? 'Math.tan(Math.PI/180*' : 'Math.tan(')
+                                        .replace(/asin/g, isDegrees ? 'Math.asin*180/Math.PI' : 'Math.asin')
+                                        .replace(/acos/g, isDegrees ? 'Math.acos*180/Math.PI' : 'Math.acos')
+                                        .replace(/atan/g, isDegrees ? 'Math.atan*180/Math.PI' : 'Math.atan')
+                                        .replace(/log/g, 'Math.log10')
+                                        .replace(/ln/g, 'Math.log')
+                                        .replace(/exp/g, 'Math.exp')
+                                        .replace(/π/g, 'Math.PI')
+                                        .replace(/e/g, 'Math.E')
+                                        .replace(/mod/g, '%')
+                                        .replace(/abs/g, 'Math.abs')
+                                        .replace(/x!/g, 'factorial');
+                                    
+                                    const evalResult = eval(evalExpression);
+                                    
+                                    if (isFinite(evalResult) && !isNaN(evalResult)) {
+                                        addToScientificHistory(currentScientificExpression, formatNumber(evalResult));
+                                        currentScientificExpression = formatNumber(evalResult);
+                                    } else {
+                                        currentScientificExpression = 'Error';
+                                    }
+                                } catch (error) {
+                                    currentScientificExpression = 'Error';
+                                }
+                                break;
+                            case 'scientificMemory':
+                                try {
+                                    const evalExpression = currentScientificExpression
+                                        .replace(/×/g, '*')
+                                        .replace(/÷/g, '/')
+                                        .replace(/√/g, 'Math.sqrt')
+                                        .replace(/²/g, '**2');
+                                    
+                                    const evalResult = eval(evalExpression);
+                                    
+                                    if (isFinite(evalResult) && !isNaN(evalResult)) {
+                                        memoryValue += evalResult;
+                                        currentScientificExpression = '0';
+                                    }
+                                } catch (error) {
+                                    // Ignore error
+                                }
+                                break;
+                            case 'scientificMemoryRecall':
+                                currentScientificExpression = memoryValue.toString();
+                                break;
+                            case 'scientificMemoryClear':
+                                memoryValue = 0;
+                                break;
+                            case 'scientificMemorySubtract':
+                                try {
+                                    const evalExpression = currentScientificExpression
+                                        .replace(/×/g, '*')
+                                        .replace(/÷/g, '/')
+                                        .replace(/√/g, 'Math.sqrt')
+                                        .replace(/²/g, '**2');
+                                    
+                                    const evalResult = eval(evalExpression);
+                                    
+                                    if (isFinite(evalResult) && !isNaN(evalResult)) {
+                                        memoryValue -= evalResult;
+                                        currentScientificExpression = '0';
+                                    }
+                                } catch (error) {
+                                    // Ignore error
+                                }
+                                break;
+                            case 'scientificDegRad':
+                                isDegrees = !isDegrees;
+                                this.textContent = isDegrees ? 'DEG' : 'RAD';
+                                break;
+                            
+                            // Scientific functions
+                            case 'sin':
+                                currentScientificExpression = 'sin(' + currentScientificExpression + ')';
+                                break;
+                            case 'cos':
+                                currentScientificExpression = 'cos(' + currentScientificExpression + ')';
+                                break;
+                            case 'tan':
+                                currentScientificExpression = 'tan(' + currentScientificExpression + ')';
+                                break;
+                            case 'asin':
+                                currentScientificExpression = 'asin(' + currentScientificExpression + ')';
+                                break;
+                            case 'acos':
+                                currentScientificExpression = 'acos(' + currentScientificExpression + ')';
+                                break;
+                            case 'atan':
+                                currentScientificExpression = 'atan(' + currentScientificExpression + ')';
+                                break;
+                            case 'log':
+                                currentScientificExpression = 'log(' + currentScientificExpression + ')';
+                                break;
+                            case 'ln':
+                                currentScientificExpression = 'ln(' + currentScientificExpression + ')';
+                                break;
+                            case 'exp':
+                                currentScientificExpression = 'exp(' + currentScientificExpression + ')';
+                                break;
+                            case 'pi':
+                                currentScientificExpression = 'π';
+                                break;
+                            case 'e':
+                                currentScientificExpression = 'e';
+                                break;
+                            case 'power':
+                                currentScientificExpression += '^';
+                                break;
+                            case 'factorial':
+                                currentScientificExpression += '!';
+                                break;
+                            case 'modulo':
+                                currentScientificExpression += 'mod';
+                                break;
+                            case 'abs':
+                                currentScientificExpression = 'abs(' + currentScientificExpression + ')';
+                                break;
+                            case 'leftParen':
+                                currentScientificExpression += '(';
+                                break;
+                            case 'rightParen':
+                                currentScientificExpression += ')';
+                                break;
+                        }
+                        
+                        updateDisplay();
+                        updateScientificDisplay();
+                    }
+                });
+            });
+            
+            // Unit converter functions
+            function convertLength() {
+                const fromValue = parseFloat(lengthFromValue.value);
+                const fromUnit = lengthFromUnit.value;
+                const toUnit = lengthToUnit.value;
+                
+                if (isNaN(fromValue)) {
+                    lengthToValue.value = '';
+                    return;
+                }
+                
+                // Convert to meters first (base unit)
+                let meters = 0;
+                switch (fromUnit) {
+                    case 'meter':
+                        meters = fromValue;
+                        break;
+                    case 'kilometer':
+                        meters = fromValue * 1000;
+                        break;
+                    case 'centimeter':
+                        meters = fromValue / 100;
+                        break;
+                    case 'millimeter':
+                        meters = fromValue / 1000;
+                        break;
+                    case 'mile':
+                        meters = fromValue * 1609.344;
+                        break;
+                    case 'yard':
+                        meters = fromValue * 0.9144;
+                        break;
+                    case 'foot':
+                        meters = fromValue * 0.3048;
+                        break;
+                    case 'inch':
+                        meters = fromValue * 0.0254;
+                        break;
+                }
+                
+                // Convert from meters to target unit
+                let result = 0;
+                switch (toUnit) {
+                    case 'meter':
+                        result = meters;
+                        break;
+                    case 'kilometer':
+                        result = meters / 1000;
+                        break;
+                    case 'centimeter':
+                        result = meters * 100;
+                        break;
+                    case 'millimeter':
+                        result = meters * 1000;
+                        break;
+                    case 'mile':
+                        result = meters / 1609.344;
+                        break;
+                    case 'yard':
+                        result = meters / 0.9144;
+                        break;
+                    case 'foot':
+                        result = meters / 0.3048;
+                        break;
+                    case 'inch':
+                        result = meters / 0.0254;
+                        break;
+                }
+                
+                lengthToValue.value = result.toFixed(6);
+            }
+            
+            function convertWeight() {
+                const fromValue = parseFloat(weightFromValue.value);
+                const fromUnit = weightFromUnit.value;
+                const toUnit = weightToUnit.value;
+                
+                if (isNaN(fromValue)) {
+                    weightToValue.value = '';
+                    return;
+                }
+                
+                // Convert to kilograms first (base unit)
+                let kilograms = 0;
+                switch (fromUnit) {
+                    case 'kilogram':
+                        kilograms = fromValue;
+                        break;
+                    case 'gram':
+                        kilograms = fromValue / 1000;
+                        break;
+                    case 'milligram':
+                        kilograms = fromValue / 1000000;
+                        break;
+                    case 'pound':
+                        kilograms = fromValue * 0.45359237;
+                        break;
+                    case 'ounce':
+                        kilograms = fromValue * 0.028349523125;
+                        break;
+                }
+                
+                // Convert from kilograms to target unit
+                let result = 0;
+                switch (toUnit) {
+                    case 'kilogram':
+                        result = kilograms;
+                        break;
+                    case 'gram':
+                        result = kilograms * 1000;
+                        break;
+                    case 'milligram':
+                        result = kilograms * 1000000;
+                        break;
+                    case 'pound':
+                        result = kilograms / 0.45359237;
+                        break;
+                    case 'ounce':
+                        result = kilograms / 0.028349523125;
+                        break;
+                }
+                
+                weightToValue.value = result.toFixed(6);
+            }
+            
+            function convertTemperature() {
+                const fromValue = parseFloat(tempFromValue.value);
+                const fromUnit = tempFromUnit.value;
+                const toUnit = tempToUnit.value;
+                
+                if (isNaN(fromValue)) {
+                    tempToValue.value = '';
+                    return;
+                }
+                
+                // Convert to Celsius first (base unit)
+                let celsius = 0;
+                switch (fromUnit) {
+                    case 'celsius':
+                        celsius = fromValue;
+                        break;
+                    case 'fahrenheit':
+                        celsius = (fromValue - 32) * 5/9;
+                        break;
+                    case 'kelvin':
+                        celsius = fromValue - 273.15;
+                        break;
+                }
+                
+                // Convert from Celsius to target unit
+                let result = 0;
+                switch (toUnit) {
+                    case 'celsius':
+                        result = celsius;
+                        break;
+                    case 'fahrenheit':
+                        result = celsius * 9/5 + 32;
+                        break;
+                    case 'kelvin':
+                        result = celsius + 273.15;
+                        break;
+                }
+                
+                tempToValue.value = result.toFixed(2);
+            }
+            
+            // Unit converter event listeners
+            lengthFromValue.addEventListener('input', convertLength);
+            lengthFromUnit.addEventListener('change', convertLength);
+            lengthToUnit.addEventListener('change', convertLength);
+            
+            weightFromValue.addEventListener('input', convertWeight);
+            weightFromUnit.addEventListener('change', convertWeight);
+            weightToUnit.addEventListener('change', convertWeight);
+            
+            tempFromValue.addEventListener('input', convertTemperature);
+            tempFromUnit.addEventListener('change', convertTemperature);
+            tempToUnit.addEventListener('change', convertTemperature);
+            
+            convertBtn.addEventListener('click', function() {
+                convertLength();
+                convertWeight();
+                convertTemperature();
+            });
+            
+            resetConverterBtn.addEventListener('click', function() {
+                lengthFromValue.value = '';
+                lengthToValue.value = '';
+                weightFromValue.value = '';
+                weightToValue.value = '';
+                tempFromValue.value = '';
+                tempToValue.value = '';
+            });
+            
+            // Keyboard support
+            document.addEventListener('keydown', function(event) {
+                const key = event.key;
+                
+                // Number keys
+                if (/^[0-9]$/.test(key)) {
+                    if (currentExpression === '0') {
+                        currentExpression = key;
+                    } else {
+                        currentExpression += key;
+                    }
+                    updateDisplay();
+                }
+                
+                // Operator keys
+                if (key === '+' || key === '-' || key === '*' || key === '/') {
+                    const operatorMap = {
+                        '+': '+',
+                        '-': '-',
+                        '*': '×',
+                        '/': '÷'
+                    };
+                    currentExpression += operatorMap[key];
+                    updateDisplay();
+                }
+                
+                // Decimal point
+                if (key === '.') {
+                    if (!currentExpression.includes('.')) {
+                        currentExpression += '.';
+                        updateDisplay();
+                    }
+                }
+                
+                // Equals
+                if (key === 'Enter') {
+                    try {
+                        const evalExpression = currentExpression
+                            .replace(/×/g, '*')
+                            .replace(/÷/g, '/')
+                            .replace(/√/g, 'Math.sqrt')
+                            .replace(/²/g, '**2');
+                        
+                        const evalResult = eval(evalExpression);
+                        
+                        if (isFinite(evalResult) && !isNaN(evalResult)) {
+                            addToHistory(currentExpression, formatNumber(evalResult));
+                            currentExpression = formatNumber(evalResult);
+                        } else {
+                            currentExpression = 'Error';
+                        }
+                    } catch (error) {
+                        currentExpression = 'Error';
+                    }
+                    updateDisplay();
+                }
+                
+                // Clear
+                if (key === 'Escape') {
+                    currentExpression = '0';
+                    updateDisplay();
+                }
+                
+                // Backspace
+                if (key === 'Backspace') {
+                    if (currentExpression.length > 1) {
+                        currentExpression = currentExpression.slice(0, -1);
+                    } else {
+                        currentExpression = '0';
+                    }
+                    updateDisplay();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

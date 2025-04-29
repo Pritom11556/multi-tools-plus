@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Calculator - Multi-Tools Hub</title>
+    <meta name="description" content="Free online discount calculator to calculate discounts, final prices, and savings percentages.">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../css/style.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .discount-container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .discount-card {
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 1.5rem;
+        }
+        
+        .discount-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 1rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        
+        .discount-body {
+            padding: 1.5rem;
+        }
+        
+        .discount-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 1rem;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+        
+        .discount-input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .discount-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .discount-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .discount-input:focus {
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .discount-result {
+            background-color: #e9ecef;
+            padding: 1rem;
+            border-radius: 0.25rem;
+            margin-top: 1.5rem;
+        }
+        
+        .discount-result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .discount-result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .discount-result-label {
+            font-weight: 500;
+        }
+        
+        .discount-result-value {
+            font-weight: 700;
+        }
+        
+        .discount-savings {
+            color: #198754;
+            font-weight: 700;
+        }
+        
+        .discount-chart {
+            margin-top: 1.5rem;
+            height: 200px;
+        }
+        
+        .discount-tabs {
+            margin-bottom: 1rem;
+        }
+        
+        .discount-tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border: 1px solid #dee2e6;
+            background-color: #f8f9fa;
+            margin-right: 0.25rem;
+            border-radius: 0.25rem 0.25rem 0 0;
+        }
+        
+        .discount-tab.active {
+            background-color: #fff;
+            border-bottom: 1px solid #fff;
+            margin-bottom: -1px;
+        }
+        
+        .discount-panel {
+            display: none;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0 0.25rem 0.25rem 0.25rem;
+        }
+        
+        .discount-panel.active {
+            display: block;
+        }
+        
+        .discount-presets {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .discount-preset {
+            padding: 0.25rem 0.5rem;
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .discount-preset:hover {
+            background-color: #dee2e6;
+        }
+        
+        .discount-preset.active {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+        
+        .discount-slider {
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .discount-slider-value {
+            text-align: center;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+        
+        .discount-bulk {
+            margin-top: 1.5rem;
+        }
+        
+        .discount-bulk-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .discount-bulk-input {
+            width: 100px;
+            margin-right: 0.5rem;
+        }
+        
+        .discount-bulk-remove {
+            color: #dc3545;
+            cursor: pointer;
+        }
+        
+        .discount-bulk-add {
+            margin-top: 0.5rem;
+        }
+        
+        .discount-bulk-result {
+            margin-top: 1rem;
+        }
+        
+        .discount-bulk-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .discount-bulk-table th,
+        .discount-bulk-table td {
+            padding: 0.5rem;
+            border: 1px solid #dee2e6;
+            text-align: left;
+        }
+        
+        .discount-bulk-table th {
+            background-color: #f8f9fa;
+        }
+        
+        .discount-bulk-total {
+            font-weight: 700;
+            background-color: #f8f9fa;
+        }
+        
+        @media (max-width: 768px) {
+            .discount-result-item {
+                flex-direction: column;
+            }
+            
+            .discount-result-value {
+                margin-top: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be dynamically loaded -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1><i class="fas fa-percent"></i> Discount Calculator</h1>
+                <p class="lead">Calculate discounts, final prices, and savings percentages</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="discount-container">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Discount Calculator</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="discount-tabs">
+                                    <span class="discount-tab active" data-tab="single">Single Item</span>
+                                    <span class="discount-tab" data-tab="bulk">Bulk Discount</span>
+                                </div>
+                                
+                                <!-- Single Item Discount Panel -->
+                                <div class="discount-panel active" id="singlePanel">
+                                    <div class="discount-input-group">
+                                        <label class="discount-label" for="originalPrice">Original Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="discount-input" id="originalPrice" placeholder="Enter original price" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="discount-input-group">
+                                        <label class="discount-label">Discount Type</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="discountType" id="percentageDiscount" value="percentage" checked>
+                                            <label class="form-check-label" for="percentageDiscount">
+                                                Percentage Discount
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="discountType" id="fixedDiscount" value="fixed">
+                                            <label class="form-check-label" for="fixedDiscount">
+                                                Fixed Amount Discount
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="discount-input-group" id="percentageInputGroup">
+                                        <label class="discount-label" for="discountPercentage">Discount Percentage</label>
+                                        <div class="input-group">
+                                            <input type="number" class="discount-input" id="discountPercentage" placeholder="Enter discount percentage" min="0" max="100" step="0.1">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="discount-input-group" id="fixedInputGroup" style="display: none;">
+                                        <label class="discount-label" for="discountAmount">Discount Amount</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" class="discount-input" id="discountAmount" placeholder="Enter discount amount" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="discount-presets">
+                                        <div class="discount-preset" data-percentage="5">5%</div>
+                                        <div class="discount-preset" data-percentage="10">10%</div>
+                                        <div class="discount-preset" data-percentage="15">15%</div>
+                                        <div class="discount-preset" data-percentage="20">20%</div>
+                                        <div class="discount-preset" data-percentage="25">25%</div>
+                                        <div class="discount-preset" data-percentage="30">30%</div>
+                                        <div class="discount-preset" data-percentage="40">40%</div>
+                                        <div class="discount-preset" data-percentage="50">50%</div>
+                                    </div>
+                                    
+                                    <div class="discount-input-group">
+                                        <label class="discount-label" for="discountSlider">Discount Slider</label>
+                                        <input type="range" class="discount-slider" id="discountSlider" min="0" max="100" step="1" value="0">
+                                        <div class="discount-slider-value" id="sliderValue">0%</div>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <button class="btn btn-primary" id="calculateBtn">Calculate Discount</button>
+                                        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+                                    </div>
+                                    
+                                    <div class="discount-result" id="discountResult" style="display: none;">
+                                        <h5 class="mb-3">Discount Results</h5>
+                                        
+                                        <div class="discount-result-item">
+                                            <div class="discount-result-label">Original Price:</div>
+                                            <div class="discount-result-value" id="resultOriginalPrice">$0.00</div>
+                                        </div>
+                                        
+                                        <div class="discount-result-item">
+                                            <div class="discount-result-label">Discount Amount:</div>
+                                            <div class="discount-result-value" id="resultDiscountAmount">$0.00</div>
+                                        </div>
+                                        
+                                        <div class="discount-result-item">
+                                            <div class="discount-result-label">Final Price:</div>
+                                            <div class="discount-result-value" id="resultFinalPrice">$0.00</div>
+                                        </div>
+                                        
+                                        <div class="discount-result-item">
+                                            <div class="discount-result-label">You Save:</div>
+                                            <div class="discount-result-value discount-savings" id="resultSavings">$0.00</div>
+                                        </div>
+                                        
+                                        <div class="discount-result-item">
+                                            <div class="discount-result-label">Discount Percentage:</div>
+                                            <div class="discount-result-value" id="resultDiscountPercentage">0%</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="discount-chart" id="discountChart"></div>
+                                </div>
+                                
+                                <!-- Bulk Discount Panel -->
+                                <div class="discount-panel" id="bulkPanel">
+                                    <div class="discount-bulk">
+                                        <h5>Bulk Items</h5>
+                                        <div id="bulkItems">
+                                            <div class="discount-bulk-item">
+                                                <div class="discount-bulk-input">
+                                                    <label class="discount-label">Price</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">$</span>
+                                                        <input type="number" class="discount-input bulk-price" placeholder="Price" min="0" step="0.01">
+                                                    </div>
+                                                </div>
+                                                <div class="discount-bulk-input">
+                                                    <label class="discount-label">Quantity</label>
+                                                    <input type="number" class="discount-input bulk-quantity" placeholder="Qty" min="1" value="1">
+                                                </div>
+                                                <div class="discount-bulk-input">
+                                                    <label class="discount-label">Discount %</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="discount-input bulk-discount" placeholder="%" min="0" max="100" step="0.1" value="0">
+                                                        <span class="input-group-text">%</span>
+                                                    </div>
+                                                </div>
+                                                <div class="discount-bulk-remove">
+                                                    <i class="fas fa-times"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="discount-bulk-add">
+                                            <button class="btn btn-outline-primary" id="addBulkItemBtn">
+                                                <i class="fas fa-plus"></i> Add Item
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="text-center mt-3">
+                                            <button class="btn btn-primary" id="calculateBulkBtn">Calculate Bulk Discount</button>
+                                            <button class="btn btn-secondary" id="resetBulkBtn">Reset</button>
+                                        </div>
+                                        
+                                        <div class="discount-bulk-result" id="bulkResult" style="display: none;">
+                                            <h5 class="mt-4 mb-3">Bulk Discount Results</h5>
+                                            
+                                            <table class="discount-bulk-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Item</th>
+                                                        <th>Price</th>
+                                                        <th>Quantity</th>
+                                                        <th>Discount</th>
+                                                        <th>Final Price</th>
+                                                        <th>Savings</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="bulkTableBody">
+                                                    <!-- Table rows will be added here -->
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr class="discount-bulk-total">
+                                                        <td colspan="4">Total</td>
+                                                        <td id="bulkTotalPrice">$0.00</td>
+                                                        <td id="bulkTotalSavings">$0.00</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <h4>About Discount Calculator</h4>
+                        <p>A versatile tool to calculate discounts, final prices, and savings percentages for single items or bulk purchases.</p>
+                        
+                        <h5 class="mt-3">Features:</h5>
+                        <ul>
+                            <li>Calculate percentage or fixed amount discounts</li>
+                            <li>Quick preset discount percentages</li>
+                            <li>Interactive discount slider</li>
+                            <li>Bulk discount calculations for multiple items</li>
+                            <li>Visual representation of savings</li>
+                        </ul>
+                        
+                        <h5 class="mt-3">Common Uses:</h5>
+                        <ul>
+                            <li>Retail pricing and promotions</li>
+                            <li>Sale price calculations</li>
+                            <li>Bulk purchase discounts</li>
+                            <li>Coupon and voucher value</li>
+                            <li>Price comparison</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle"></i> Tip: Use the bulk discount calculator for calculating discounts on multiple items with different quantities and discount rates.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be dynamically loaded -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const originalPriceInput = document.getElementById('originalPrice');
+            const discountPercentageInput = document.getElementById('discountPercentage');
+            const discountAmountInput = document.getElementById('discountAmount');
+            const percentageDiscountRadio = document.getElementById('percentageDiscount');
+            const fixedDiscountRadio = document.getElementById('fixedDiscount');
+            const percentageInputGroup = document.getElementById('percentageInputGroup');
+            const fixedInputGroup = document.getElementById('fixedInputGroup');
+            const discountSlider = document.getElementById('discountSlider');
+            const sliderValue = document.getElementById('sliderValue');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const discountResult = document.getElementById('discountResult');
+            const resultOriginalPrice = document.getElementById('resultOriginalPrice');
+            const resultDiscountAmount = document.getElementById('resultDiscountAmount');
+            const resultFinalPrice = document.getElementById('resultFinalPrice');
+            const resultSavings = document.getElementById('resultSavings');
+            const resultDiscountPercentage = document.getElementById('resultDiscountPercentage');
+            const discountPresets = document.querySelectorAll('.discount-preset');
+            const discountTabs = document.querySelectorAll('.discount-tab');
+            const discountPanels = document.querySelectorAll('.discount-panel');
+            
+            // Bulk discount elements
+            const bulkItems = document.getElementById('bulkItems');
+            const addBulkItemBtn = document.getElementById('addBulkItemBtn');
+            const calculateBulkBtn = document.getElementById('calculateBulkBtn');
+            const resetBulkBtn = document.getElementById('resetBulkBtn');
+            const bulkResult = document.getElementById('bulkResult');
+            const bulkTableBody = document.getElementById('bulkTableBody');
+            const bulkTotalPrice = document.getElementById('bulkTotalPrice');
+            const bulkTotalSavings = document.getElementById('bulkTotalSavings');
+            
+            // Chart
+            let discountChart = null;
+            
+            // Tab switching
+            discountTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    discountTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active panel
+                    discountPanels.forEach(panel => {
+                        panel.classList.remove('active');
+                        if (panel.id === tabName + 'Panel') {
+                            panel.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Discount type switching
+            percentageDiscountRadio.addEventListener('change', function() {
+                percentageInputGroup.style.display = 'block';
+                fixedInputGroup.style.display = 'none';
+                discountSlider.disabled = false;
+                updateSliderValue();
+            });
+            
+            fixedDiscountRadio.addEventListener('change', function() {
+                percentageInputGroup.style.display = 'none';
+                fixedInputGroup.style.display = 'block';
+                discountSlider.disabled = true;
+            });
+            
+            // Discount presets
+            discountPresets.forEach(preset => {
+                preset.addEventListener('click', function() {
+                    const percentage = this.getAttribute('data-percentage');
+                    discountPercentageInput.value = percentage;
+                    discountSlider.value = percentage;
+                    sliderValue.textContent = percentage + '%';
+                    
+                    // Set active preset
+                    discountPresets.forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Switch to percentage discount
+                    percentageDiscountRadio.checked = true;
+                    percentageInputGroup.style.display = 'block';
+                    fixedInputGroup.style.display = 'none';
+                    discountSlider.disabled = false;
+                });
+            });
+            
+            // Discount slider
+            discountSlider.addEventListener('input', function() {
+                updateSliderValue();
+            });
+            
+            function updateSliderValue() {
+                const value = discountSlider.value;
+                sliderValue.textContent = value + '%';
+                discountPercentageInput.value = value;
+                
+                // Update active preset
+                discountPresets.forEach(preset => {
+                    if (preset.getAttribute('data-percentage') === value) {
+                        preset.classList.add('active');
+                    } else {
+                        preset.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Calculate discount
+            calculateBtn.addEventListener('click', function() {
+                calculateDiscount();
+            });
+            
+            function calculateDiscount() {
+                const originalPrice = parseFloat(originalPriceInput.value);
+                
+                if (isNaN(originalPrice) || originalPrice <= 0) {
+                    alert('Please enter a valid original price');
+                    return;
+                }
+                
+                let discountAmount = 0;
+                let discountPercentage = 0;
+                
+                if (percentageDiscountRadio.checked) {
+                    discountPercentage = parseFloat(discountPercentageInput.value);
+                    
+                    if (isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 100) {
+                        alert('Please enter a valid discount percentage (0-100)');
+                        return;
+                    }
+                    
+                    discountAmount = originalPrice * (discountPercentage / 100);
+                } else {
+                    discountAmount = parseFloat(discountAmountInput.value);
+                    
+                    if (isNaN(discountAmount) || discountAmount < 0 || discountAmount > originalPrice) {
+                        alert('Please enter a valid discount amount (less than or equal to the original price)');
+                        return;
+                    }
+                    
+                    discountPercentage = (discountAmount / originalPrice) * 100;
+                }
+                
+                const finalPrice = originalPrice - discountAmount;
+                
+                // Update results
+                resultOriginalPrice.textContent = formatCurrency(originalPrice);
+                resultDiscountAmount.textContent = formatCurrency(discountAmount);
+                resultFinalPrice.textContent = formatCurrency(finalPrice);
+                resultSavings.textContent = formatCurrency(discountAmount);
+                resultDiscountPercentage.textContent = formatPercentage(discountPercentage);
+                
+                // Show results
+                discountResult.style.display = 'block';
+                
+                // Update chart
+                updateChart(originalPrice, discountAmount);
+            }
+            
+            function updateChart(originalPrice, discountAmount) {
+                const finalPrice = originalPrice - discountAmount;
+                
+                // Destroy existing chart if it exists
+                if (discountChart) {
+                    discountChart.destroy();
+                }
+                
+                // Create new chart
+                const ctx = document.getElementById('discountChart').getContext('2d');
+                discountChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Final Price', 'Discount'],
+                        datasets: [{
+                            data: [finalPrice, discountAmount],
+                            backgroundColor: ['#0d6efd', '#dc3545'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        return label + ': ' + formatCurrency(value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Reset calculator
+            resetBtn.addEventListener('click', function() {
+                originalPriceInput.value = '';
+                discountPercentageInput.value = '';
+                discountAmountInput.value = '';
+                discountSlider.value = 0;
+                sliderValue.textContent = '0%';
+                
+                // Reset active preset
+                discountPresets.forEach(preset => preset.classList.remove('active'));
+                
+                // Hide results
+                discountResult.style.display = 'none';
+                
+                // Destroy chart
+                if (discountChart) {
+                    discountChart.destroy();
+                    discountChart = null;
+                }
+            });
+            
+            // Add bulk item
+            addBulkItemBtn.addEventListener('click', function() {
+                const bulkItem = document.createElement('div');
+                bulkItem.className = 'discount-bulk-item';
+                bulkItem.innerHTML = `
+                    <div class="discount-bulk-input">
+                        <label class="discount-label">Price</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="discount-input bulk-price" placeholder="Price" min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="discount-bulk-input">
+                        <label class="discount-label">Quantity</label>
+                        <input type="number" class="discount-input bulk-quantity" placeholder="Qty" min="1" value="1">
+                    </div>
+                    <div class="discount-bulk-input">
+                        <label class="discount-label">Discount %</label>
+                        <div class="input-group">
+                            <input type="number" class="discount-input bulk-discount" placeholder="%" min="0" max="100" step="0.1" value="0">
+                            <span class="input-group-text">%</span>
+                        </div>
+                    </div>
+                    <div class="discount-bulk-remove">
+                        <i class="fas fa-times"></i>
+                    </div>
+                `;
+                
+                bulkItems.appendChild(bulkItem);
+                
+                // Add event listener to remove button
+                const removeBtn = bulkItem.querySelector('.discount-bulk-remove');
+                removeBtn.addEventListener('click', function() {
+                    bulkItems.removeChild(bulkItem);
+                });
+            });
+            
+            // Calculate bulk discount
+            calculateBulkBtn.addEventListener('click', function() {
+                calculateBulkDiscount();
+            });
+            
+            function calculateBulkDiscount() {
+                const bulkItemElements = bulkItems.querySelectorAll('.discount-bulk-item');
+                
+                if (bulkItemElements.length === 0) {
+                    alert('Please add at least one item');
+                    return;
+                }
+                
+                let totalOriginalPrice = 0;
+                let totalFinalPrice = 0;
+                let totalSavings = 0;
+                
+                // Clear table body
+                bulkTableBody.innerHTML = '';
+                
+                // Process each item
+                bulkItemElements.forEach((item, index) => {
+                    const price = parseFloat(item.querySelector('.bulk-price').value);
+                    const quantity = parseInt(item.querySelector('.bulk-quantity').value);
+                    const discountPercentage = parseFloat(item.querySelector('.bulk-discount').value);
+                    
+                    if (isNaN(price) || price <= 0) {
+                        alert(`Please enter a valid price for item ${index + 1}`);
+                        return;
+                    }
+                    
+                    if (isNaN(quantity) || quantity <= 0) {
+                        alert(`Please enter a valid quantity for item ${index + 1}`);
+                        return;
+                    }
+                    
+                    if (isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 100) {
+                        alert(`Please enter a valid discount percentage (0-100) for item ${index + 1}`);
+                        return;
+                    }
+                    
+                    const itemOriginalPrice = price * quantity;
+                    const discountAmount = itemOriginalPrice * (discountPercentage / 100);
+                    const itemFinalPrice = itemOriginalPrice - discountAmount;
+                    
+                    totalOriginalPrice += itemOriginalPrice;
+                    totalFinalPrice += itemFinalPrice;
+                    totalSavings += discountAmount;
+                    
+                    // Add row to table
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>Item ${index + 1}</td>
+                        <td>${formatCurrency(price)}</td>
+                        <td>${quantity}</td>
+                        <td>${formatPercentage(discountPercentage)}</td>
+                        <td>${formatCurrency(itemFinalPrice)}</td>
+                        <td>${formatCurrency(discountAmount)}</td>
+                    `;
+                    
+                    bulkTableBody.appendChild(row);
+                });
+                
+                // Update totals
+                bulkTotalPrice.textContent = formatCurrency(totalFinalPrice);
+                bulkTotalSavings.textContent = formatCurrency(totalSavings);
+                
+                // Show results
+                bulkResult.style.display = 'block';
+            }
+            
+            // Reset bulk calculator
+            resetBulkBtn.addEventListener('click', function() {
+                // Keep only the first item and reset its values
+                const firstItem = bulkItems.querySelector('.discount-bulk-item');
+                
+                if (firstItem) {
+                    firstItem.querySelector('.bulk-price').value = '';
+                    firstItem.querySelector('.bulk-quantity').value = '1';
+                    firstItem.querySelector('.bulk-discount').value = '0';
+                    
+                    // Remove all other items
+                    const items = bulkItems.querySelectorAll('.discount-bulk-item');
+                    for (let i = 1; i < items.length; i++) {
+                        bulkItems.removeChild(items[i]);
+                    }
+                }
+                
+                // Hide results
+                bulkResult.style.display = 'none';
+            });
+            
+            // Format currency
+            function formatCurrency(value) {
+                return '$' + value.toFixed(2);
+            }
+            
+            // Format percentage
+            function formatPercentage(value) {
+                return value.toFixed(1) + '%';
+            }
+        });
+    </script>
+</body>
+</html> 
