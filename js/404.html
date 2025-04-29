@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Multi-Tools Hub</title>
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://your-domain.com/404.html">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4a6bff, #6a11cb);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 600px;
+        }
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        h2 {
+            font-size: 2rem;
+            margin: 1rem 0;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #4a6bff;
+            text-decoration: none;
+            border-radius: 2rem;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .suggestions {
+            margin-top: 3rem;
+            text-align: left;
+        }
+        .suggestions h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .suggestions ul {
+            list-style: none;
+            padding: 0;
+        }
+        .suggestions li {
+            margin-bottom: 0.5rem;
+        }
+        .suggestions a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: opacity 0.3s;
+        }
+        .suggestions a:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404</h1>
+        <h2>Page Not Found</h2>
+        <p>The page you're looking for doesn't exist or has been moved.</p>
+        <a href="/" class="btn">Return Home</a>
+        
+        <div class="suggestions">
+            <h3>You might be interested in:</h3>
+            <ul>
+                <li><a href="/tools">Our Tools</a></li>
+                <li><a href="/blog">Latest Blog Posts</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Support</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Track 404 errors
+        window.addEventListener('load', function() {
+            if (typeof gtag === 'function') {
+                gtag('event', '404_error', {
+                    'event_category': 'error',
+                    'event_label': window.location.pathname
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

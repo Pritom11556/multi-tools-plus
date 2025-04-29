@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+    <url>
+        <loc>https://your-domain.com/videos/image-tools-tutorial</loc>
+        <video:video>
+            <video:thumbnail_loc>https://your-domain.com/videos/image-tools-tutorial-thumb.jpg</video:thumbnail_loc>
+            <video:title>How to Use Multi-Tools Hub Image Processing Tools</video:title>
+            <video:description>Learn how to use our image processing tools to optimize, convert, and edit your images for web use.</video:description>
+            <video:content_loc>https://your-domain.com/videos/image-tools-tutorial.mp4</video:content_loc>
+            <video:player_loc allow_embed="yes">https://your-domain.com/embed/image-tools-tutorial</video:player_loc>
+            <video:duration>330</video:duration>
+            <video:publication_date>2024-04-10T10:00:00+00:00</video:publication_date>
+            <video:family_friendly>yes</video:family_friendly>
+            <video:live>no</video:live>
+            <video:tag>image processing</video:tag>
+            <video:tag>image optimization</video:tag>
+            <video:tag>web tools</video:tag>
+            <video:tag>tutorial</video:tag>
+            <video:category>Technology</video:category>
+        </video:video>
+    </url>
+    <url>
+        <loc>https://your-domain.com/videos/text-tools-tutorial</loc>
+        <video:video>
+            <video:thumbnail_loc>https://your-domain.com/videos/text-tools-tutorial-thumb.jpg</video:thumbnail_loc>
+            <video:title>How to Use Multi-Tools Hub Text Processing Tools</video:title>
+            <video:description>Learn how to use our text processing tools to format, convert, and optimize your text content.</video:description>
+            <video:content_loc>https://your-domain.com/videos/text-tools-tutorial.mp4</video:content_loc>
+            <video:player_loc allow_embed="yes">https://your-domain.com/embed/text-tools-tutorial</video:player_loc>
+            <video:duration>420</video:duration>
+            <video:publication_date>2024-04-05T14:30:00+00:00</video:publication_date>
+            <video:family_friendly>yes</video:family_friendly>
+            <video:live>no</video:live>
+            <video:tag>text processing</video:tag>
+            <video:tag>text formatting</video:tag>
+            <video:tag>web tools</video:tag>
+            <video:tag>tutorial</video:tag>
+            <video:category>Technology</video:category>
+        </video:video>
+    </url>
+    <url>
+        <loc>https://your-domain.com/videos/calculator-tools-tutorial</loc>
+        <video:video>
+            <video:thumbnail_loc>https://your-domain.com/videos/calculator-tools-tutorial-thumb.jpg</video:thumbnail_loc>
+            <video:title>How to Use Multi-Tools Hub Calculator Tools</video:title>
+            <video:description>Learn how to use our calculator tools for financial planning, conversions, and more.</video:description>
+            <video:content_loc>https://your-domain.com/videos/calculator-tools-tutorial.mp4</video:content_loc>
+            <video:player_loc allow_embed="yes">https://your-domain.com/embed/calculator-tools-tutorial</video:player_loc>
+            <video:duration>380</video:duration>
+            <video:publication_date>2024-04-01T09:15:00+00:00</video:publication_date>
+            <video:family_friendly>yes</video:family_friendly>
+            <video:live>no</video:live>
+            <video:tag>calculator</video:tag>
+            <video:tag>financial planning</video:tag>
+            <video:tag>web tools</video:tag>
+            <video:tag>tutorial</video:tag>
+            <video:category>Technology</video:category>
+        </video:video>
+    </url>
+</urlset> 

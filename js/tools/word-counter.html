@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Counter - Multi-Tools Hub</title>
+    <meta name="description" content="Free online word counter tool. Count words, characters, and paragraphs in your text easily.">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../css/style.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header will be dynamically loaded -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1><i class="fas fa-calculator"></i> Word Counter</h1>
+                <p class="lead">Count words, characters, and paragraphs in your text</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-4">
+                        <textarea id="textInput" class="form-control" rows="10" placeholder="Type or paste your text here..."></textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button id="clearBtn" class="btn btn-secondary">Clear Text</button>
+                        <button id="copyBtn" class="btn btn-primary">Copy Text</button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <h4>Statistics</h4>
+                        <div class="stat-item">
+                            <span class="stat-label">Words:</span>
+                            <span id="wordCount" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Characters:</span>
+                            <span id="charCount" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Characters (no spaces):</span>
+                            <span id="charNoSpaceCount" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Paragraphs:</span>
+                            <span id="paragraphCount" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Reading Time:</span>
+                            <span id="readingTime" class="stat-value">0 min</span>
+                        </div>
+                    </div>
+
+                    <!-- Ad Section -->
+                    <div class="ad-container mt-4">
+                        <div id="ad-space"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be dynamically loaded -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const textInput = document.getElementById('textInput');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            // Update statistics
+            function updateStats() {
+                const text = textInput.value;
+                const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+                const chars = text.length;
+                const charsNoSpace = text.replace(/\s/g, '').length;
+                const paragraphs = text.split(/\n+/).filter(para => para.trim().length > 0);
+                const readingTime = Math.ceil(words.length / 200); // Assuming 200 words per minute
+
+                document.getElementById('wordCount').textContent = words.length;
+                document.getElementById('charCount').textContent = chars;
+                document.getElementById('charNoSpaceCount').textContent = charsNoSpace;
+                document.getElementById('paragraphCount').textContent = paragraphs.length;
+                document.getElementById('readingTime').textContent = `${readingTime} min`;
+            }
+
+            // Event listeners
+            textInput.addEventListener('input', updateStats);
+            
+            clearBtn.addEventListener('click', () => {
+                textInput.value = '';
+                updateStats();
+            });
+
+            copyBtn.addEventListener('click', () => {
+                textInput.select();
+                document.execCommand('copy');
+                copyBtn.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy Text';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html> 

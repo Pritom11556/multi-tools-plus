@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter - Multi-Tools Hub</title>
+    <meta name="description" content="Convert time between different time zones easily. Free online time zone converter tool.">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../css/style.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Luxon for date/time handling -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+</head>
+<body>
+    <!-- Header will be dynamically loaded -->
+    <div id="header-placeholder"></div>
+
+    <main class="container py-5">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1><i class="fas fa-clock me-2"></i>Time Zone Converter</h1>
+                <p>Convert time between different time zones easily. Perfect for scheduling meetings, travel planning, and international communication.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form id="timeZoneForm">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="sourceDate" class="form-label">Date</label>
+                                            <input type="date" class="form-control" id="sourceDate" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="sourceTime" class="form-label">Time</label>
+                                            <input type="time" class="form-control" id="sourceTime" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="sourceTimezone" class="form-label">From Time Zone</label>
+                                            <select class="form-select" id="sourceTimezone" required>
+                                                <option value="">Select time zone</option>
+                                                <!-- Time zones will be populated by JavaScript -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="targetTimezone" class="form-label">To Time Zone</label>
+                                            <select class="form-select" id="targetTimezone" required>
+                                                <option value="">Select time zone</option>
+                                                <!-- Time zones will be populated by JavaScript -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" class="btn btn-secondary me-md-2" id="resetBtn">Reset</button>
+                                    <button type="submit" class="btn btn-primary">Convert</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4" id="resultCard" style="display: none;">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Conversion Result</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="result-box p-3 mb-3 bg-light rounded">
+                                        <h6 class="text-muted mb-2">Original Time</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h4 id="sourceDateTime" class="mb-0"></h4>
+                                                <p id="sourceTimezoneName" class="text-muted mb-0"></p>
+                                            </div>
+                                            <div class="text-end">
+                                                <span id="sourceOffset" class="badge bg-secondary"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="result-box p-3 mb-3 bg-primary text-white rounded">
+                                        <h6 class="mb-2">Converted Time</h6>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h4 id="targetDateTime" class="mb-0"></h4>
+                                                <p id="targetTimezoneName" class="mb-0 opacity-75"></p>
+                                            </div>
+                                            <div class="text-end">
+                                                <span id="targetOffset" class="badge bg-light text-dark"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-difference mt-3 p-3 bg-light rounded">
+                                <h6 class="text-muted mb-2">Time Difference</h6>
+                                <p id="timeDifference" class="mb-0 fs-5"></p>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                                <button type="button" class="btn btn-outline-primary" id="copyBtn">
+                                    <i class="fas fa-copy me-2"></i>Copy Result
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Common Time Zones</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="mb-3">North America</h6>
+                                    <div class="list-group">
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="America/New_York">New York (ET)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="America/Chicago">Chicago (CT)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="America/Denver">Denver (MT)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="America/Los_Angeles">Los Angeles (PT)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="America/Anchorage">Anchorage (AKT)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="Pacific/Honolulu">Honolulu (HST)</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="mb-3">Europe & Asia</h6>
+                                    <div class="list-group">
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="Europe/London">London (GMT/BST)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="Europe/Paris">Paris (CET/CEST)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="Europe/Berlin">Berlin (CET/CEST)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="Asia/Dubai">Dubai (GST)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="Asia/Singapore">Singapore (SGT)</button>
+                                        <button type="button" class="list-group-item list-group-item-action timezone-quick-select" data-timezone="Asia/Tokyo">Tokyo (JST)</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="sidebar">
+                        <h5>About Time Zone Converter</h5>
+                        <p>This tool helps you convert time between different time zones around the world. Simply select a date, time, and the source and target time zones to see the converted time.</p>
+                        
+                        <h5 class="mt-4">Tips for Best Results</h5>
+                        <ul>
+                            <li>Use the quick select buttons for common time zones</li>
+                            <li>Consider daylight saving time (DST) when scheduling</li>
+                            <li>For international meetings, convert to UTC/GMT for clarity</li>
+                            <li>Use the copy button to share the conversion result</li>
+                        </ul>
+                        
+                        <h5 class="mt-4">Common Uses</h5>
+                        <ul>
+                            <li>International meeting scheduling</li>
+                            <li>Travel planning</li>
+                            <li>Remote work coordination</li>
+                            <li>Global event planning</li>
+                        </ul>
+                    </div>
+
+                    <div class="ad-space mt-4">
+                        <p>Advertisement Space</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be dynamically loaded -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../js/main.js"></script>
+    <script>
+        // Initialize Luxon
+        const DateTime = luxon.DateTime;
+        
+        // DOM Elements
+        const timeZoneForm = document.getElementById('timeZoneForm');
+        const sourceDateInput = document.getElementById('sourceDate');
+        const sourceTimeInput = document.getElementById('sourceTime');
+        const sourceTimezoneSelect = document.getElementById('sourceTimezone');
+        const targetTimezoneSelect = document.getElementById('targetTimezone');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultCard = document.getElementById('resultCard');
+        const sourceDateTimeEl = document.getElementById('sourceDateTime');
+        const sourceTimezoneNameEl = document.getElementById('sourceTimezoneName');
+        const sourceOffsetEl = document.getElementById('sourceOffset');
+        const targetDateTimeEl = document.getElementById('targetDateTime');
+        const targetTimezoneNameEl = document.getElementById('targetTimezoneName');
+        const targetOffsetEl = document.getElementById('targetOffset');
+        const timeDifferenceEl = document.getElementById('timeDifference');
+        const copyBtn = document.getElementById('copyBtn');
+        const timezoneQuickSelectBtns = document.querySelectorAll('.timezone-quick-select');
+        
+        // Set default date to today
+        const today = new Date();
+        sourceDateInput.value = today.toISOString().split('T')[0];
+        
+        // Set default time to current time
+        const hours = today.getHours().toString().padStart(2, '0');
+        const minutes = today.getMinutes().toString().padStart(2, '0');
+        sourceTimeInput.value = `${hours}:${minutes}`;
+        
+        // Populate time zones
+        function populateTimeZones() {
+            // Get all time zones
+            const timeZones = Intl.supportedValuesOf('timeZone');
+            
+            // Sort time zones by offset
+            timeZones.sort((a, b) => {
+                const offsetA = DateTime.now().setZone(a).toFormat('ZZZZ');
+                const offsetB = DateTime.now().setZone(b).toFormat('ZZZZ');
+                return offsetA.localeCompare(offsetB);
+            });
+            
+            // Add time zones to both selects
+            timeZones.forEach(timeZone => {
+                const offset = DateTime.now().setZone(timeZone).toFormat('ZZZZ');
+                const option = document.createElement('option');
+                option.value = timeZone;
+                option.textContent = `${timeZone} (${offset})`;
+                
+                // Clone for target select
+                const targetOption = option.cloneNode(true);
+                
+                sourceTimezoneSelect.appendChild(option);
+                targetTimezoneSelect.appendChild(targetOption);
+            });
+            
+            // Set default values based on user's time zone
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            // Find and select the user's time zone in source select
+            for (let i = 0; i < sourceTimezoneSelect.options.length; i++) {
+                if (sourceTimezoneSelect.options[i].value === userTimeZone) {
+                    sourceTimezoneSelect.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            // Set a default target time zone (e.g., UTC)
+            for (let i = 0; i < targetTimezoneSelect.options.length; i++) {
+                if (targetTimezoneSelect.options[i].value === 'UTC') {
+                    targetTimezoneSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+        
+        // Convert time
+        function convertTime() {
+            const sourceDate = sourceDateInput.value;
+            const sourceTime = sourceTimeInput.value;
+            const sourceTimezone = sourceTimezoneSelect.value;
+            const targetTimezone = targetTimezoneSelect.value;
+            
+            if (!sourceDate || !sourceTime || !sourceTimezone || !targetTimezone) {
+                return;
+            }
+            
+            // Create DateTime object for source time
+            const sourceDateTime = DateTime.fromISO(`${sourceDate}T${sourceTime}`, { zone: sourceTimezone });
+            
+            // Convert to target time zone
+            const targetDateTime = sourceDateTime.setZone(targetTimezone);
+            
+            // Calculate time difference
+            const diffHours = Math.abs(targetDateTime.offset / 60 - sourceDateTime.offset / 60);
+            const aheadBehind = targetDateTime.offset > sourceDateTime.offset ? 'ahead of' : 'behind';
+            
+            // Update UI
+            sourceDateTimeEl.textContent = sourceDateTime.toFormat('cccc, MMMM d, yyyy h:mm a');
+            sourceTimezoneNameEl.textContent = sourceTimezone;
+            sourceOffsetEl.textContent = sourceDateTime.toFormat('ZZZZ');
+            
+            targetDateTimeEl.textContent = targetDateTime.toFormat('cccc, MMMM d, yyyy h:mm a');
+            targetTimezoneNameEl.textContent = targetTimezone;
+            targetOffsetEl.textContent = targetDateTime.toFormat('ZZZZ');
+            
+            timeDifferenceEl.textContent = `${targetTimezone} is ${diffHours} hours ${aheadBehind} ${sourceTimezone}`;
+            
+            // Show result card
+            resultCard.style.display = 'block';
+        }
+        
+        // Reset form
+        function resetForm() {
+            timeZoneForm.reset();
+            
+            // Set default date to today
+            const today = new Date();
+            sourceDateInput.value = today.toISOString().split('T')[0];
+            
+            // Set default time to current time
+            const hours = today.getHours().toString().padStart(2, '0');
+            const minutes = today.getMinutes().toString().padStart(2, '0');
+            sourceTimeInput.value = `${hours}:${minutes}`;
+            
+            // Set default time zones
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            // Find and select the user's time zone in source select
+            for (let i = 0; i < sourceTimezoneSelect.options.length; i++) {
+                if (sourceTimezoneSelect.options[i].value === userTimeZone) {
+                    sourceTimezoneSelect.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            // Set a default target time zone (e.g., UTC)
+            for (let i = 0; i < targetTimezoneSelect.options.length; i++) {
+                if (targetTimezoneSelect.options[i].value === 'UTC') {
+                    targetTimezoneSelect.selectedIndex = i;
+                    break;
+                }
+            }
+            
+            // Hide result card
+            resultCard.style.display = 'none';
+        }
+        
+        // Copy result to clipboard
+        function copyResult() {
+            const sourceDateTime = sourceDateTimeEl.textContent;
+            const sourceTimezone = sourceTimezoneNameEl.textContent;
+            const targetDateTime = targetDateTimeEl.textContent;
+            const targetTimezone = targetTimezoneNameEl.textContent;
+            const timeDifference = timeDifferenceEl.textContent;
+            
+            const textToCopy = `Time Zone Conversion:\n\n${sourceDateTime} (${sourceTimezone})\n${targetDateTime} (${targetTimezone})\n\n${timeDifference}`;
+            
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    // Show success message
+                    const originalText = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check me-2"></i>Copied!';
+                    
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalText;
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+        }
+        
+        // Event Listeners
+        timeZoneForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            convertTime();
+        });
+        
+        resetBtn.addEventListener('click', resetForm);
+        
+        copyBtn.addEventListener('click', copyResult);
+        
+        // Quick select time zones
+        timezoneQuickSelectBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const timeZone = btn.getAttribute('data-timezone');
+                
+                // Check if source or target is empty
+                if (!sourceTimezoneSelect.value) {
+                    sourceTimezoneSelect.value = timeZone;
+                } else if (!targetTimezoneSelect.value) {
+                    targetTimezoneSelect.value = timeZone;
+                } else {
+                    // If both are filled, ask user which to replace
+                    if (confirm(`Replace which time zone?\n\n1. Source (${sourceTimezoneSelect.value})\n2. Target (${targetTimezoneSelect.value})`)) {
+                        sourceTimezoneSelect.value = timeZone;
+                    } else {
+                        targetTimezoneSelect.value = timeZone;
+                    }
+                }
+                
+                // Convert time if both time zones are selected
+                if (sourceTimezoneSelect.value && targetTimezoneSelect.value) {
+                    convertTime();
+                }
+            });
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTimeZones();
+        });
+    </script>
+</body>
+</html> 

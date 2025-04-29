@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+    <url>
+        <loc>https://your-domain.com/blog/image-optimization-guide</loc>
+        <news:news>
+            <news:publication>
+                <news:name>Multi-Tools Hub Blog</news:name>
+                <news:language>en</news:language>
+            </news:publication>
+            <news:publication_date>2024-04-20T10:00:00+00:00</news:publication_date>
+            <news:title>10 Ways to Optimize Your Images for Web</news:title>
+            <news:keywords>image optimization, web performance, SEO, image compression, web tools</news:keywords>
+        </news:news>
+    </url>
+    <url>
+        <loc>https://your-domain.com/blog/text-formatting-guide</loc>
+        <news:news>
+            <news:publication>
+                <news:name>Multi-Tools Hub Blog</news:name>
+                <news:language>en</news:language>
+            </news:publication>
+            <news:publication_date>2024-04-15T14:30:00+00:00</news:publication_date>
+            <news:title>The Ultimate Guide to Text Formatting Tools</news:title>
+            <news:keywords>text formatting, content creation, web tools, text processing, productivity</news:keywords>
+        </news:news>
+    </url>
+    <url>
+        <loc>https://your-domain.com/blog/calculator-tools-guide</loc>
+        <news:news>
+            <news:publication>
+                <news:name>Multi-Tools Hub Blog</news:name>
+                <news:language>en</news:language>
+            </news:publication>
+            <news:publication_date>2024-04-10T09:15:00+00:00</news:publication_date>
+            <news:title>How to Use Our Calculator Tools for Financial Planning</news:title>
+            <news:keywords>calculator tools, financial planning, loan calculator, percentage calculator, web tools</news:keywords>
+        </news:news>
+    </url>
+</urlset> 

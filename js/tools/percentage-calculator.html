@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator - Multi-Tools Hub</title>
+    <meta name="description" content="Free online percentage calculator. Calculate percentages, percentage changes, and more with this easy-to-use tool.">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../css/style.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header will be dynamically loaded -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <div class="tool-container">
+            <div class="tool-header">
+                <h1><i class="fas fa-percent"></i> Percentage Calculator</h1>
+                <p class="lead">Calculate percentages, percentage changes, and more with this easy-to-use calculator</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="calculator-container">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Calculation Type</h5>
+                            </div>
+                            <div class="card-body">
+                                <select class="form-select mb-3" id="calculationType">
+                                    <option value="basic">Calculate percentage of a number</option>
+                                    <option value="change">Calculate percentage change</option>
+                                    <option value="ratio">What percentage is one number of another</option>
+                                    <option value="addsubtract">Add/Subtract percentage</option>
+                                </select>
+
+                                <!-- Basic Percentage Calculator -->
+                                <div id="basicCalculator" class="calculator-section">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Percentage (%)</label>
+                                            <input type="number" class="form-control" id="basicPercentage" placeholder="Enter percentage">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Number</label>
+                                            <input type="number" class="form-control" id="basicNumber" placeholder="Enter number">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Percentage Change Calculator -->
+                                <div id="changeCalculator" class="calculator-section d-none">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Original Value</label>
+                                            <input type="number" class="form-control" id="originalValue" placeholder="Enter original value">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">New Value</label>
+                                            <input type="number" class="form-control" id="newValue" placeholder="Enter new value">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Percentage Ratio Calculator -->
+                                <div id="ratioCalculator" class="calculator-section d-none">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Part</label>
+                                            <input type="number" class="form-control" id="partValue" placeholder="Enter part value">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Whole</label>
+                                            <input type="number" class="form-control" id="wholeValue" placeholder="Enter whole value">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Add/Subtract Percentage Calculator -->
+                                <div id="addSubtractCalculator" class="calculator-section d-none">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Original Number</label>
+                                            <input type="number" class="form-control" id="originalNumber" placeholder="Enter number">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Percentage to Add/Subtract (%)</label>
+                                            <input type="number" class="form-control" id="changePercentage" placeholder="Enter percentage">
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="btn-group" role="group">
+                                                <input type="radio" class="btn-check" name="operation" id="addOperation" value="add" checked>
+                                                <label class="btn btn-outline-primary" for="addOperation">Add</label>
+                                                <input type="radio" class="btn-check" name="operation" id="subtractOperation" value="subtract">
+                                                <label class="btn btn-outline-primary" for="subtractOperation">Subtract</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button class="btn btn-primary" id="calculateBtn">Calculate</button>
+                                    <button class="btn btn-secondary" id="resetBtn">Reset</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Results Card -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Results</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="resultContainer" class="text-center">
+                                    <div class="result-box p-3 rounded">
+                                        <h3 id="resultValue">0</h3>
+                                        <p id="resultExplanation" class="text-muted mb-0"></p>
+                                    </div>
+                                    <div class="mt-3">
+                                        <button class="btn btn-outline-primary btn-sm" id="copyResult">
+                                            <i class="fas fa-copy"></i> Copy Result
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="info-card">
+                        <h4>About Percentage Calculator</h4>
+                        <p>This versatile percentage calculator helps you perform various percentage calculations quickly and accurately.</p>
+                        
+                        <h5 class="mt-3">Features:</h5>
+                        <ul>
+                            <li>Calculate percentage of a number</li>
+                            <li>Find percentage change between values</li>
+                            <li>Determine what percentage one number is of another</li>
+                            <li>Add or subtract percentages</li>
+                        </ul>
+                        
+                        <h5 class="mt-3">Common Uses:</h5>
+                        <ul>
+                            <li>Calculating discounts</li>
+                            <li>Finding tax amounts</li>
+                            <li>Computing grade percentages</li>
+                            <li>Analyzing growth rates</li>
+                            <li>Calculating profit margins</li>
+                        </ul>
+                        
+                        <div class="alert alert-info mt-3">
+                            <i class="fas fa-info-circle"></i> Tip: Use negative percentages to calculate decreases.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be dynamically loaded -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calculationType = document.getElementById('calculationType');
+            const calculatorSections = document.querySelectorAll('.calculator-section');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const copyResult = document.getElementById('copyResult');
+            const resultValue = document.getElementById('resultValue');
+            const resultExplanation = document.getElementById('resultExplanation');
+
+            // Show/hide calculator sections based on selection
+            calculationType.addEventListener('change', function() {
+                calculatorSections.forEach(section => section.classList.add('d-none'));
+                document.getElementById(this.value + 'Calculator').classList.remove('d-none');
+                resetCalculator();
+            });
+
+            // Calculate button click handler
+            calculateBtn.addEventListener('click', function() {
+                let result = 0;
+                let explanation = '';
+
+                switch(calculationType.value) {
+                    case 'basic':
+                        const percentage = parseFloat(document.getElementById('basicPercentage').value);
+                        const number = parseFloat(document.getElementById('basicNumber').value);
+                        result = (percentage / 100) * number;
+                        explanation = `${percentage}% of ${number} is ${result.toFixed(2)}`;
+                        break;
+
+                    case 'change':
+                        const original = parseFloat(document.getElementById('originalValue').value);
+                        const newVal = parseFloat(document.getElementById('newValue').value);
+                        result = ((newVal - original) / original) * 100;
+                        const changeType = result >= 0 ? 'increase' : 'decrease';
+                        explanation = `The percentage ${changeType} from ${original} to ${newVal} is ${Math.abs(result).toFixed(2)}%`;
+                        break;
+
+                    case 'ratio':
+                        const part = parseFloat(document.getElementById('partValue').value);
+                        const whole = parseFloat(document.getElementById('wholeValue').value);
+                        result = (part / whole) * 100;
+                        explanation = `${part} is ${result.toFixed(2)}% of ${whole}`;
+                        break;
+
+                    case 'addsubtract':
+                        const origNum = parseFloat(document.getElementById('originalNumber').value);
+                        const changePercent = parseFloat(document.getElementById('changePercentage').value);
+                        const operation = document.querySelector('input[name="operation"]:checked').value;
+                        
+                        if (operation === 'add') {
+                            result = origNum * (1 + (changePercent / 100));
+                            explanation = `${origNum} increased by ${changePercent}% is ${result.toFixed(2)}`;
+                        } else {
+                            result = origNum * (1 - (changePercent / 100));
+                            explanation = `${origNum} decreased by ${changePercent}% is ${result.toFixed(2)}`;
+                        }
+                        break;
+                }
+
+                resultValue.textContent = result.toFixed(2);
+                resultExplanation.textContent = explanation;
+            });
+
+            // Reset button click handler
+            resetBtn.addEventListener('click', resetCalculator);
+
+            // Copy result button click handler
+            copyResult.addEventListener('click', function() {
+                const textToCopy = `${resultValue.textContent}\n${resultExplanation.textContent}`;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+
+            // Reset calculator function
+            function resetCalculator() {
+                const inputs = document.querySelectorAll('input[type="number"]');
+                inputs.forEach(input => input.value = '');
+                resultValue.textContent = '0';
+                resultExplanation.textContent = '';
+            }
+
+            // Input validation
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.value === '') return;
+                    const value = parseFloat(this.value);
+                    if (isNaN(value)) {
+                        this.value = '';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
